@@ -1,0 +1,351 @@
+openapi: 3.0.2
+info:
+  title: Pueblo Pelicula API.
+  description: API del TP de Programacion Avanzada "Pueblo pelicula".
+  version: 0.0.1
+
+paths:
+  /cinemas/names:
+    get:
+      summary: Returns the names of all the available Cinemas.
+      tags:
+        - cinema
+      responses:
+        200:
+          description: A list containing all the Cinemas' names.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: The name of a cinema.
+                  example: "Cine Vicente Lopez"
+
+  /cinemas/{id}:
+    get:
+      summary: Returns a Cinema given its id.
+      tags:
+        - cinema
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: The id of the cinema to find.
+      responses:
+        200:
+          description: Success to return the Cinema.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cinema'
+        404:
+          description: No Cinema found with the given id.
+
+  /cinemas/screening/schedule:
+    post:
+      summary: Schedules a new Screening at a Cinema.
+      tags:
+        - cinema
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScreeningSchedule'
+      responses:
+        200:
+          description: Success to schedule the Screening.
+        400:
+          description: Invalid input.
+        404:
+          description: Either the movie, the theater or the cinema is not found.
+  /cinemas/screening/replaning:
+    post:
+      summary: Replan all the screenings of the cinema in a given date.
+      tags:
+        - cinema
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScreeningReplanning'
+      responses:
+        200:
+          description: Success to replan the Screenings.
+        400:
+          description: Invalid input.
+        404:
+          description: Either the theater or the cinema is not found.
+
+  /movies:
+    get:
+      summary: Returns all the available movies without the poster poster.
+      tags:
+        - movie
+      responses:
+        200:
+          description: A list containing all the Movies.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: '#/components/schemas/CommercialMovie'
+                    - $ref: '#/components/schemas/DocumentaryMovie'
+
+    post:
+      summary: Creates a new Movie.
+      tags:
+        - movie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              anyOf:
+                - $ref: '#/components/schemas/CommercialMovie'
+                - $ref: '#/components/schemas/DocumentaryMovie'
+      responses:
+        201:
+          description: Success to create the new movie.
+        400:
+          description: Invalid input.
+
+  /movies/{id}/poster:
+    get:
+      summary: Returns the poster of a movie, in base64 format.
+      tags:
+        - movie
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: The id of the movie to find its poster.
+      responses:
+        200:
+          description: Success to return the poster of the movie.
+          content:
+            application/json:
+              schema:
+                description: The poster of the movie, represented in a base64 format string.
+                type: string
+                minLength: 1
+                example: "data:image/jpeg;base64,iVBORw0KGgoA..."
+        404:
+          description: Movie not found.
+
+components:
+  schemas:
+
+    Cinema:
+      type: object
+      required:
+        - name
+      properties:
+        id:
+          description: The id of the cinema.
+          type: integer
+          format: int64
+          example: 1
+        name:
+          description: The name of the cinema. Is usually related to where is located.
+          type: string
+          minLength: 1
+          example: "Cine Vicente Lopez"
+        theaters:
+          description: A list containing the theather that the cinema has.
+          type: array
+          items:
+            $ref: '#/components/schemas/Theater'
+
+    Theater:
+      type: object
+      required:
+        - number
+        - theater_type
+      properties:
+        id:
+          description: The id of the theater.
+          type: integer
+          format: int64
+          example: 1
+        number:
+          description: Identifies the theater from other theaters in the same cinema.
+          type: integer
+          format: int32
+          example: 2
+        theater_type:
+          $ref: '#/components/schemas/TheaterType'
+        screenings:
+          description: A list containing the screenings that are scheduled in the theater.
+          type: array
+          items:
+            $ref: '#/components/schemas/Screening'
+
+    TheaterType:
+      description: Defines the different types of theaters available.
+      type: string
+      enum: [REGULAR, HIGH_DEFINITION]
+      example: "REGULAR"
+
+    Screening:
+      type: object
+      required:
+        - beginsAt
+        - movie
+      properties:
+        id:
+          description: The id of the screening.
+          type: integer
+          format: int64
+          example: 1
+        beginsAt:
+          description: The scheduled date and time at which the movie begins.
+          type: string
+          format: date-time
+          example: 2022-06-20T10:00:00-03:00
+        movie_id:
+          description: The id of the movie that will be played at the screening.
+          type: integer
+          format: int64
+          example: 1
+
+    ScreeningSchedule:
+      type: object
+      required:
+        - cinema_id
+        - theater_id
+        - movie_id
+        - date
+      properties:
+        cinema_id:
+          description: The id of the cinema to schedule the screening.
+          type: integer
+          format: int64
+          example: 1
+        theater_id:
+          description: The id of the theater to schedule the screening. Must belong to the given cinema.
+          type: integer
+          format: int64
+          example: 1
+        movie_id:
+          description: The id of the movie that will be played at the screening.
+          type: integer
+          format: int64
+          example: 1
+        date:
+          description: The date when the screening will be scheduled. Must be a date in the future.
+          type: string
+          format: date
+          example: '2023-12-20'
+
+    ScreeningReplanning:
+      type: object
+      required:
+        - cinema_id
+        - theater_id
+        - date
+      properties:
+        cinema_id:
+          description: The id of the cinema to replan its screenings.
+          type: integer
+          format: int64
+          example: 1
+        theater_id:
+          description: The id of the theater to replan its screenings Must belong to the given cinema.
+          type: integer
+          format: int64
+          example: 1
+        date:
+          description: The date at which the replan will occur. Must be a date in the future.
+          type: string
+          format: date
+          example: '2023-12-20'
+
+    Movie:
+      type: object
+      required:
+        - name
+        - movie
+        - duration
+      properties:
+        id:
+          description: The id of the movie.
+          type: integer
+          format: int64
+          example: 1
+        name:
+          description: The name of the movie.
+          type: string
+          minLength: 1
+          example: "Titanic"
+        duration:
+          description: The duration of the movie, in minutes.
+          type: integer
+          format: int32
+          example: 132
+        poster:
+          description: The poster of the movie, represented in a base64 format string.
+          type: string
+          minLength: 1
+          example: "data:image/jpeg;base64,iVBORw0KGgoA..."
+
+    CommercialMovie:
+      allOf:
+        - $ref: '#/components/schemas/Movie'
+        - type: object
+          required:
+            - movie_type
+          properties:
+            movie_type:
+              description: Defines the type of the movie. It should always be 'Commercial'.
+              type: string
+              minLength: 1
+              example: "Commercial"
+            actors:
+              description: The actors that participate in the movie.
+              type: array
+              items:
+                type: string
+                minLength: 1
+                example: "Natalie Portman"
+
+    DocumentaryMovie:
+      allOf:
+        - $ref: '#/components/schemas/Movie'
+        - type: object
+          required:
+            - movie_type
+            - documentary_type
+          properties:
+            movie_type:
+              description: Defines the type of the movie. It should always be 'Documentary'.
+              type: string
+              minLength: 1
+              example: "Documentary"
+            documentary_type:
+              $ref: '#/components/schemas/DocumentaryType'
+
+    DocumentaryType:
+      description: Defines the different types of documentaries.
+      type: string
+      enum: [BIOGRAPHY, WILD_LIFE, ECOLOGY, HISTORICAL, SOCIAL]
+      example: "WILD_LIFE"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      in: header
+      name: Authorization
