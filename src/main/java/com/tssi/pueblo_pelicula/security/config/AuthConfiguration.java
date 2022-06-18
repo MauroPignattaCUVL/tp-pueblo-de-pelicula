@@ -5,6 +5,7 @@ import com.tssi.pueblo_pelicula.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -28,7 +29,7 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
     private AuthService authService;
 
     String[] publicEndpoint = {
-            "/cinema/auth/login",
+            "/users/login",
             "/h2-console/**"
     };
 
@@ -36,11 +37,12 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.authorizeRequests()
-                .antMatchers(publicEndpoint).permitAll()
-                .anyRequest().authenticated()
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            .antMatchers(publicEndpoint).permitAll()
+            .antMatchers(HttpMethod.GET).permitAll()
+            .anyRequest().authenticated()
+            .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-                .headers().frameOptions().disable();
+            .headers().frameOptions().disable();
     }
 
     @Override

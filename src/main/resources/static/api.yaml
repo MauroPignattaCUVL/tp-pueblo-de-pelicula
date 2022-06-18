@@ -5,6 +5,24 @@ info:
   version: 0.0.1
 
 paths:
+  /users/login:
+    post:
+      summary: Login for users.
+      tags:
+        - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        200:
+          description: Success to login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+
   /cinemas/names:
     get:
       summary: Returns the names of all the available Cinemas.
@@ -105,6 +123,8 @@ paths:
       summary: Creates a new Movie.
       tags:
         - movie
+      security:
+        - bearerAuth: [ ]
       requestBody:
         content:
           application/json:
@@ -146,6 +166,46 @@ paths:
 
 components:
   schemas:
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          description: The user's email.
+          type: string
+          format: email
+          minLength: 1
+          example: "CristianPerez@gmail.com"
+        password:
+          description: The user's password.
+          type: string
+          format: password
+          minLength: 1
+          example: "123456"
+
+    AuthToken:
+      type: object
+      required:
+        - access_token
+      properties:
+        access_token:
+          description: A JWT token.
+          type: string
+          minLength: 1
+          example: "eYj..."
+        token_type:
+          description: The type of token. It's always Bearer.
+          type: string
+          minLength: 1
+          example: "Bearer"
+        expires_in:
+          description: The duration of the token, in millis.
+          type: integer
+          format: int32
+          example: "3600000"
 
     Cinema:
       type: object

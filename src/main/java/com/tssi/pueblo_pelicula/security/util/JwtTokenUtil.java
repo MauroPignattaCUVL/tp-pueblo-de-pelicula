@@ -64,12 +64,16 @@ public class JwtTokenUtil implements Serializable {
     }
 
     public Boolean validateToken(String token, User user) {
-        final Long id = Long.valueOf(extractId(token));
-        return id == user.getId() && !isTokenExpired(token);
+        final Long id = extractId(token);
+        return id.equals(user.getId()) && !isTokenExpired(token);
     }
 
     @Autowired
     public void setAuthRepository(final AuthRepository authRepository) {
         this.authRepository = authRepository;
+    }
+
+    public Integer getJwtExpiration() {
+        return jwtExpiration;
     }
 }

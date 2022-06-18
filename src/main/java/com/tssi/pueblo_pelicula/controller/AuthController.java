@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/cinema/auth")
+@RequestMapping("/users")
 public class AuthController {
 
     private AuthService authService;
