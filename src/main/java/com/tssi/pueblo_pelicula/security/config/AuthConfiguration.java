@@ -41,6 +41,7 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.GET).permitAll()
             .anyRequest().authenticated()
             .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.cors();
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
             .headers().frameOptions().disable();
     }
@@ -49,6 +50,7 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(authService);
     }
+
 
     @Bean
     @Override
