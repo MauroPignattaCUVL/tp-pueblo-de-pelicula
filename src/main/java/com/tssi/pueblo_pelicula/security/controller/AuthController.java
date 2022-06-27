@@ -1,4 +1,4 @@
-package com.tssi.pueblo_pelicula.controller;
+package com.tssi.pueblo_pelicula.security.controller;
 
 import com.tssi.pueblo_pelicula.dto.LoginDTO;
 import com.tssi.pueblo_pelicula.dto.LoginResponseDTO;
