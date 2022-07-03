@@ -23,33 +23,38 @@ public class MovieController {
 
     private MovieService movieService;
 
-    public MovieController(MovieService movieService){
+    public MovieController(MovieService movieService) {
         this.movieService = movieService;
     }
 
     @GetMapping
     @Transactional(readOnly = true)
-    public ResponseEntity<List<MovieDTO>> getMovies (){
+    public ResponseEntity<List<MovieDTO>> getMovies() {
         return new ResponseEntity<>(movieService.getMovies(),HttpStatus.OK);
     }
 
     @PostMapping
     @Transactional
-    public ResponseEntity<MovieDTO> postMovie(@RequestBody MovieDTO movieDTO){
+    public ResponseEntity<MovieDTO> postMovie(@RequestBody MovieDTO movieDTO) {
        return new ResponseEntity<>(movieService.save(movieDTO),HttpStatus.CREATED);
-
     }
 
     @GetMapping("/{id}")
     @Transactional(readOnly = true)
-    public ResponseEntity<MovieDTO> getMovieById(@PathVariable Long id){
-        return new ResponseEntity<>(movieService.getMovieById(id),HttpStatus.OK);
+    public ResponseEntity<MovieDTO> getMovieById(@PathVariable Long id) {
+        return new ResponseEntity<>(movieService.getMovieById(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> deleteMovie(@PathVariable Long id){
+    public ResponseEntity<?> deleteMovie(@PathVariable Long id) {
         movieService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{id}/poster")
+    @Transactional(readOnly = true)
+    public ResponseEntity<String> getMoviePoster(@PathVariable Long id) {
+        return ResponseEntity.ok(movieService.getMoviePoster(id));
     }
 }

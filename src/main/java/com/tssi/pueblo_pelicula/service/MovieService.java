@@ -9,8 +9,9 @@ public interface MovieService {
 
     MovieDTO getMovieById(Long id);
 
+    String getMoviePoster(Long id);
+
     List<MovieDTO> getMovies();
 
     void deleteById(Long id);
-
 }

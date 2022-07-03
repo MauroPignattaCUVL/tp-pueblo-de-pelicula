@@ -27,7 +27,7 @@ public class MovieUtil {
         return movieType;
     }
 
-    public static void checkResume(final MovieDTO movieDTO) {
+    public static void checkSynopsis(final MovieDTO movieDTO) {
         if (movieDTO.getSynopsis() != null && movieDTO.getSynopsis().length() > RESUME_MAX_LENGTH) {
             throw new BusinessException(
                 "The synopsis of the movie is invalid.", HttpStatus.BAD_REQUEST);
