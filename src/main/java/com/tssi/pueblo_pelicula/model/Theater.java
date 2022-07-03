@@ -42,7 +42,8 @@ public class Theater {
     @ManyToOne
     private Cinema cinema;
 
-    @OneToMany(mappedBy = "theater", fetch = FetchType.EAGER)
+    //esto puede generar error cuando este todo listo
+    @OneToMany(mappedBy = "theater", fetch = FetchType.LAZY)
     private Set<Screening> screenings;
 
     public void addScreening(Movie movie, LocalDate screeningDate) {

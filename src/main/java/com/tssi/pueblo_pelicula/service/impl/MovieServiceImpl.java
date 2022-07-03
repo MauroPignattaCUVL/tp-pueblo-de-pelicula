@@ -72,21 +72,24 @@ public class MovieServiceImpl implements MovieService {
 
         if (movieRepository.findById(id).isPresent()) {
             List<Cinema> cinemas = cinemaService.getAll();
-            boolean founded = cinemas.stream()
-                    .anyMatch(cinema -> cinema.getTheaters()
-                            .stream()
-                            .anyMatch(theater -> theater.getScreenings()
-                                    .stream()
-                                    .anyMatch(screening -> screening.getMovie().getId().equals(id))
-                            )
-                    );
+            boolean cantDeleted = cinemas.stream()
+                    .anyMatch(cinema ->
+                            cinema.getTheaters() != null ? cinema.getTheaters().stream()
+                                    .anyMatch(theater -> theater.getScreenings().stream()
+                                            .anyMatch(screening -> screening.getMovie() != null ? screening.getMovie()
+                                                    .getId()
+                                                    .equals(id) : false)
+                                    )
+                                    : false);
 
-            if (!founded) {
+            if (!cantDeleted) {
                 movieRepository.deleteById(id);
             } else {
-                throw new RuntimeException("La pelicula no puede borrarse porque sigue en funciones");
+                throw new RuntimeException("The movie cant be deleted because is still in theaters");
             }
 
+        } else {
+            throw new MovieNotFoundException(String.format("The movie with id %d doesn´t exists.", id));
         }
 
     }

@@ -3,6 +3,7 @@ package com.tssi.pueblo_pelicula.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -17,7 +18,7 @@ public class Cinema {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany (mappedBy = "cinema",fetch= FetchType.EAGER)
-    private Set<Theater> theaters;
+    @OneToMany (fetch= FetchType.LAZY)
+    private Set<Theater> theaters= new HashSet<>();
 
 }
