@@ -1,5 +1,6 @@
 package com.tssi.pueblo_pelicula.model;
 
+import com.tssi.pueblo_pelicula.constant.MovieType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -43,4 +44,5 @@ public abstract class Movie {
         return duration;
     }
 
+    public abstract MovieType getMovieType();
 }
