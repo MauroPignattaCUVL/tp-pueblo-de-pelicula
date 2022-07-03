@@ -17,35 +17,14 @@ import java.util.List;
 public class MovieServiceImpl implements MovieService {
 
     private MovieRepository movieRepository;
-    private CinemaService cinemaService;
 
-    public MovieServiceImpl(MovieRepository movieRepository, CinemaService cinemaService) {
+    public MovieServiceImpl(MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
-        this.cinemaService = cinemaService;
     }
 
     @Override
     public void deleteById(final Long id) {
-
-        if (movieRepository.findById(id).isPresent()) {
-            List<Cinema> cinemas = cinemaService.getAll();
-            boolean founded = cinemas.stream()
-                    .anyMatch(cinema -> cinema.getTheaters()
-                            .stream()
-                            .anyMatch(theater -> theater.getScreenings()
-                                    .stream()
-                                    .anyMatch(screening -> screening.getMovie().getId().equals(id))
-                            )
-                    );
-
-            if (!founded) {
-                movieRepository.deleteById(id);
-            } else {
-                throw new RuntimeException("La pelicula no puede borrarse porque sigue en funciones");
-            }
-
-        }
-
+        movieRepository.deleteById(id);
     }
 
     @Override

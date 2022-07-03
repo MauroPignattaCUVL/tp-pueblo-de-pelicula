@@ -22,10 +22,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthToken'
+        400:
+          description: Invalid input.
+        404:
+          description: User not found.
 
   /cinemas/names:
     get:
-      summary: Returns the names of all the available Cinemas.
+      summary: Returns the names and ids of all the available Cinemas.
       tags:
         - cinema
       responses:
@@ -34,11 +38,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: string
-                  description: The name of a cinema.
-                  example: "Cine Vicente Lopez"
+                $ref: '#/components/schemas/CinemaNameAndId'
 
   /cinemas/{id}:
     get:
@@ -76,13 +76,14 @@ paths:
             schema:
               $ref: '#/components/schemas/ScreeningSchedule'
       responses:
-        200:
+        204:
           description: Success to schedule the Screening.
         400:
           description: Invalid input.
         404:
           description: Either the movie, the theater or the cinema is not found.
-  /cinemas/screening/replaning:
+
+  /cinemas/screening/replanning:
     post:
       summary: Replan all the screenings of the cinema in a given date.
       tags:
@@ -95,8 +96,8 @@ paths:
             schema:
               $ref: '#/components/schemas/ScreeningReplanning'
       responses:
-        200:
-          description: Success to replan the Screenings.
+        204:
+          description: Success to re-plan the Screenings.
         400:
           description: Invalid input.
         404:
@@ -104,7 +105,7 @@ paths:
 
   /movies:
     get:
-      summary: Returns all the available movies without the poster poster.
+      summary: Returns all the available movies without the poster.
       tags:
         - movie
       responses:
@@ -228,6 +229,23 @@ components:
           items:
             $ref: '#/components/schemas/Theater'
 
+    CinemaNameAndId:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          description: The id of the cinema.
+          type: integer
+          format: int64
+          example: 1
+        name:
+          description: The name of the cinema. Is usually related to where is located.
+          type: string
+          minLength: 1
+          example: "Cine Vicente Lopez"
+
     Theater:
       type: object
       required:
@@ -304,7 +322,7 @@ components:
           format: int64
           example: 1
         date:
-          description: The date when the screening will be scheduled. Must be a date in the future.
+          description: The date when the screening will be scheduled with format 'yyyy-mm-dd'. Must be a date in the future.
           type: string
           format: date
           example: '2023-12-20'
@@ -327,7 +345,7 @@ components:
           format: int64
           example: 1
         date:
-          description: The date at which the replan will occur. Must be a date in the future.
+          description: The date at which the replan will occur with format 'yyyy-mm-dd'. Must be a date in the future.
           type: string
           format: date
           example: '2023-12-20'

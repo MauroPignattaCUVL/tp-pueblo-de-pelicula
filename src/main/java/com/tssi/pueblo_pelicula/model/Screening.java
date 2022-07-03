@@ -1,6 +1,6 @@
 package com.tssi.pueblo_pelicula.model;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -16,31 +16,47 @@ import java.time.temporal.ChronoUnit;
  * Represents the date and time which a movie will be player at.
  */
 @Entity
-@Data
 @NoArgsConstructor
+@Getter
 public class Screening {
+
+    /** The time that the first screening starts. */
     public static final LocalTime FIRST_SCREENING_OF_DAY = LocalTime.of(10, 0);
+
+    /** The time that the last screening starts. */
     public static final LocalTime LAST_SCREENING_OF_DAY = LocalTime.of(2, 0);
+
+    /** The minutes that must pass between a screening and another one. */
     public static final int MINUTES_BETWEEN_SCREENINGS = 15;
 
+    /** The entity's id. Might be null if not persisted yet. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /** The date and time that the screening starts. Never null. */
     @Column(nullable = false)
     private LocalDateTime time;
 
+    /** The movie to be played in the screening. Never null. */
     @OneToOne
     private Movie movie;
 
-
+    /** Constructor.
+     *
+     * @param startTime The date and time that the screening starts. Cannot be null.
+     * Must be between 10:00 AM and 02:00 AM.
+     *
+     * @param movie The movie to be played in the screening. Cannot be null.
+     */
     public Screening(LocalDateTime startTime, Movie movie) {
         Validate.notNull(startTime, "The startTime cannot be null.");
         Validate.notNull(movie, "The movie cannot be null.");
 
         LocalTime time = startTime.toLocalTime();
-        Validate.isTrue(time.isBefore(LAST_SCREENING_OF_DAY) || time.isAfter(FIRST_SCREENING_OF_DAY),
-            "The time must be between 10:00 AM and 02:00 AM.");
+        boolean isValidTime = time.isAfter(FIRST_SCREENING_OF_DAY.minusMinutes(1))
+            || time.isBefore(LAST_SCREENING_OF_DAY);
+        Validate.isTrue(isValidTime, "The time must be between 10:00 AM and 02:00 AM.");
 
         this.time = startTime;
         this.movie = movie;
@@ -60,7 +76,7 @@ public class Screening {
         Validate.notNull(date, "The date cannot be null.");
 
         LocalDate tomorrow = date.plusDays(1);
-        return time.isAfter(date.atTime(FIRST_SCREENING_OF_DAY)) &&
+        return time.isAfter(date.atTime(FIRST_SCREENING_OF_DAY.minusMinutes(1))) &&
             time.isBefore(tomorrow.atTime(LAST_SCREENING_OF_DAY));
     }
 
@@ -80,5 +96,29 @@ public class Screening {
         return time.plus(movie.getDuration(), ChronoUnit.MINUTES);
     }
 
+    /** Indicates if a given object is equal to this instance.
+     *
+     * @param o The object to compare with this instance. Can be null.
+     *
+     * @return true if the object is equal, false otherwise.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
 
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Screening screening = (Screening) o;
+
+        return new EqualsBuilder().append(time, screening.time).append(movie, screening.movie).isEquals();
+    }
+
+    /** Returns a hash code value for this instance.
+     *
+     * @return the hash code value for this instance
+     */
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(time).append(movie).toHashCode();
+    }
 }

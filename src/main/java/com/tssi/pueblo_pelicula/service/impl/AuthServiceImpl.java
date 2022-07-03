@@ -2,8 +2,7 @@ package com.tssi.pueblo_pelicula.service.impl;
 
 import com.tssi.pueblo_pelicula.dto.LoginDTO;
 import com.tssi.pueblo_pelicula.dto.LoginResponseDTO;
-import com.tssi.pueblo_pelicula.exception.CredentialsException;
-import com.tssi.pueblo_pelicula.exception.UserNotFoundException;
+import com.tssi.pueblo_pelicula.error.Input;
 import com.tssi.pueblo_pelicula.model.User;
 import com.tssi.pueblo_pelicula.repository.AuthRepository;
 import com.tssi.pueblo_pelicula.security.util.JwtTokenUtil;
@@ -37,11 +36,11 @@ public class AuthServiceImpl implements AuthService {
     public LoginResponseDTO login(LoginDTO loginDTO) {
         User user = findByEmail(loginDTO.getEmail());
         UserDetails userDetails;
-        if (user == null) {
-            throw new UserNotFoundException("The user is not registered.");
-        } else if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
-            throw new CredentialsException("The data entered is invalid.");
-        }
+
+        Input.found(user, "The user is not registered.");
+        boolean passwordMatches = passwordEncoder.matches(loginDTO.getPassword(), user.getPassword());
+        Input.isTrue(passwordMatches, "The password is incorrect.");
+
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getEmail(), loginDTO.getPassword());
         Authentication auth = authenticationManager.authenticate(token);
         userDetails = (UserDetails) auth.getPrincipal();

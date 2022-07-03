@@ -1,31 +1,55 @@
 package com.tssi.pueblo_pelicula.controller;
 
+import com.tssi.pueblo_pelicula.dto.CinemaDTO;
+import com.tssi.pueblo_pelicula.dto.CinemaNameAndIdDTO;
+import com.tssi.pueblo_pelicula.dto.ScreeningReplanningDTO;
+import com.tssi.pueblo_pelicula.dto.ScreeningScheduleDTO;
 import com.tssi.pueblo_pelicula.service.CinemaService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+import lombok.AllArgsConstructor;
 
+import javax.validation.Valid;
 import java.util.List;
 
+@Valid
+@AllArgsConstructor
 @RestController
 @RequestMapping("/cinemas")
 public class CinemaController {
 
-    private CinemaService cinemaService;
+  private CinemaService cinemaService;
 
-    public CinemaController (CinemaService cinemaService){
-        this.cinemaService = cinemaService;
-    }
-    @GetMapping("/names")
-    public ResponseEntity<List<String>> getNames(){
-        return new ResponseEntity<>(cinemaService.getNames(), HttpStatus.OK);
-    }
+  @GetMapping("/names")
+  @ResponseBody
+  @Transactional(readOnly = true)
+  public ResponseEntity<List<CinemaNameAndIdDTO>> getAllCinemasKeys() {
+    return ResponseEntity.ok(cinemaService.getCinemasNamesAndIds());
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable Long id){
-        return new ResponseEntity<>(cinemaService.getById(id), HttpStatus.OK);
-    }
+  @GetMapping("/{id}")
+  @ResponseBody
+  @Transactional(readOnly = true)
+  public ResponseEntity<CinemaDTO> getById(@PathVariable("id") Long id) {
+    return ResponseEntity.ok(cinemaService.getCinemaById(id));
+  }
+
+  @PostMapping("/screening/schedule")
+  @ResponseBody
+  @Transactional
+  public ResponseEntity<Void> scheduleScreening(@RequestBody ScreeningScheduleDTO screeningScheduleDTO) {
+    cinemaService.scheduleScreening(screeningScheduleDTO);
+
+    return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping("/screening/replanning")
+  @ResponseBody
+  @Transactional
+  public ResponseEntity<Void> replanning(@RequestBody ScreeningReplanningDTO screeningReplanningDTO) {
+    cinemaService.replanning(screeningReplanningDTO);
+
+    return ResponseEntity.noContent().build();
+  }
 }

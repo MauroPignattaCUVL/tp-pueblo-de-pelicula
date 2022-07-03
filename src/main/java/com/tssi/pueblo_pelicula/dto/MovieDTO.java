@@ -6,10 +6,11 @@ import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class MovieDTO {
+public class MovieDTO implements Serializable {
 
     @NotBlank(message = "The movie name is mandatory.")
     private String name;

@@ -2,8 +2,10 @@ package com.tssi.pueblo_pelicula.repository;
 
 import com.tssi.pueblo_pelicula.model.Cinema;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
 
-@Repository
-public interface CinemaRepository extends JpaRepository<Cinema,Long> {
+import java.time.LocalDate;
+
+public interface CinemaRepository extends JpaRepository<Cinema, Long> {
+
 }
