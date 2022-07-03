@@ -13,6 +13,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,10 +39,10 @@ public class Theater {
     @Enumerated(value = EnumType.STRING)
     private TheaterType theaterType;
 
-    @Column(nullable = false)
-    private Long cinemaId;
+    @ManyToOne
+    private Cinema cinema;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "theater", fetch = FetchType.EAGER)
     private Set<Screening> screenings;
 
     public void addScreening(Movie movie, LocalDate screeningDate) {

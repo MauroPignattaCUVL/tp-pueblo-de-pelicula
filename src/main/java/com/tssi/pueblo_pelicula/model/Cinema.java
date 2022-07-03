@@ -17,7 +17,7 @@ public class Cinema {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany (fetch= FetchType.EAGER)
+    @OneToMany (mappedBy = "cinema",fetch= FetchType.EAGER)
     private Set<Theater> theaters;
 
 }

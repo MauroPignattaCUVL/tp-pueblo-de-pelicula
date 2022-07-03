@@ -30,7 +30,10 @@ public class Screening {
     @Column(nullable = false)
     private LocalDateTime time;
 
-    @OneToOne
+    @ManyToOne
+    private Theater theater;
+
+    @ManyToOne
     private Movie movie;
 
 

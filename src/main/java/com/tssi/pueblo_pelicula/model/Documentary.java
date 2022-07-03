@@ -1,6 +1,7 @@
 package com.tssi.pueblo_pelicula.model;
 
 import com.tssi.pueblo_pelicula.constant.DocumentaryTheme;
+import com.tssi.pueblo_pelicula.constant.MovieType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.Validate;
@@ -22,4 +23,8 @@ public class Documentary extends Movie {
         this.documentaryTheme = documentaryTheme;
     }
 
+    @Override
+    public MovieType getMovieType() {
+        return MovieType.DOCUMENTARY;
+    }
 }

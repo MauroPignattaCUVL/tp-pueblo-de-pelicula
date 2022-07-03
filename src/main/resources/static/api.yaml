@@ -69,7 +69,7 @@ paths:
       tags:
         - cinema
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       requestBody:
         content:
           application/json:
@@ -255,7 +255,7 @@ components:
     TheaterType:
       description: Defines the different types of theaters available.
       type: string
-      enum: [REGULAR, HIGH_DEFINITION]
+      enum: [ REGULAR, HIGH_DEFINITION ]
       example: "REGULAR"
 
     Screening:
@@ -359,6 +359,10 @@ components:
           type: string
           minLength: 1
           example: "data:image/jpeg;base64,iVBORw0KGgoA..."
+        synopsis:
+          description: short summary of the movie.
+          type: string
+          example: "this movie is about...."
 
     CommercialMovie:
       allOf:
@@ -399,7 +403,7 @@ components:
     DocumentaryType:
       description: Defines the different types of documentaries.
       type: string
-      enum: [BIOGRAPHY, WILD_LIFE, ECOLOGY, HISTORICAL, SOCIAL]
+      enum: [ BIOGRAPHY, WILD_LIFE, ECOLOGY, HISTORICAL, SOCIAL ]
       example: "WILD_LIFE"
 
   securitySchemes:

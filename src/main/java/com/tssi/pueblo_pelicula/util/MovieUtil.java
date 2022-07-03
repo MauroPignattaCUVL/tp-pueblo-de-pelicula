@@ -2,6 +2,7 @@ package com.tssi.pueblo_pelicula.util;
 
 import com.tssi.pueblo_pelicula.constant.MovieType;
 import com.tssi.pueblo_pelicula.dto.MovieDTO;
+import com.tssi.pueblo_pelicula.exception.MovieDataException;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -15,22 +16,19 @@ public class MovieUtil {
     private static final int ACTOR_NAME_MAX_LENGTH = 60;
 
     public static MovieType getMovieType(final MovieDTO movieDTO) {
-        MovieType movieType = null;
-
-        if (CollectionUtils.isEmpty(movieDTO.getActors()) && movieDTO.getDocumentaryTheme() != null) {
-            //chequear si tiene un documentary theme valido
-            movieType = DOCUMENTARY;
-        } else if (movieDTO.getDocumentaryTheme() == null && !CollectionUtils.isEmpty(movieDTO.getActors())
-                && actorsAreValid(movieDTO.getActors())) {
-            movieType = COMMERCIAL;
+        MovieType movieType = MovieType.valueOf(movieDTO.getMovieType().toString().toUpperCase());
+        if (COMMERCIAL.equals(movieType) && (CollectionUtils.isEmpty(movieDTO.getActors()) || !actorsAreValid(movieDTO.getActors())) ||
+                DOCUMENTARY.equals(movieType) && movieDTO.getDocumentaryTheme() == null) {
+            throw new MovieDataException("The list of actor or documentary theme does not match with the movie type entered.");
         }
 
         return movieType;
     }
 
-    public static boolean checkResume(final MovieDTO movieDTO) {
-        //esto podria tirar error
-        return movieDTO.getResume() == null || movieDTO.getResume().length() <= RESUME_MAX_LENGTH;
+    public static void checkResume(final MovieDTO movieDTO) {
+        if (movieDTO.getSynopsis() != null && movieDTO.getSynopsis().length() > RESUME_MAX_LENGTH) {
+            throw new MovieDataException("The synopsis of the movie is invalid.");
+        }
     }
 
     private static boolean actorsAreValid(List<String> actors) {

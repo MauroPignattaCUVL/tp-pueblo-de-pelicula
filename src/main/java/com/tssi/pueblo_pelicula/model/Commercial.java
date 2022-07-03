@@ -1,5 +1,6 @@
 package com.tssi.pueblo_pelicula.model;
 
+import com.tssi.pueblo_pelicula.constant.MovieType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,4 +23,8 @@ public class Commercial extends Movie {
     this.actors = actors;
   }
 
+  @Override
+  public MovieType getMovieType() {
+    return MovieType.COMMERCIAL;
+  }
 }
