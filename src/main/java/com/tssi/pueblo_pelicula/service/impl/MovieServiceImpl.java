@@ -12,6 +12,7 @@ import com.tssi.pueblo_pelicula.repository.MovieRepository;
 import com.tssi.pueblo_pelicula.service.MovieService;
 import com.tssi.pueblo_pelicula.util.MovieUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -62,7 +63,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public List<MovieDTO> getMovies() {
-        List<Movie> movies = movieRepository.findAll();
+        List<Movie> movies = movieRepository.findAll(Sort.by("name"));
         return MovieMapper.toMovieDTOList(movies);
     }
 
