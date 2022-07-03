@@ -31,13 +31,14 @@ public abstract class Movie {
     @Column(nullable = false, length = 8096)
     private String poster;
 
-    private String resume;
+    @Column
+    private String synopsis;
 
-    public Movie(String name, int duration, String poster, String resume) {
+    public Movie(String name, int duration, String poster, String synopsis) {
         this.name = name;
         this.duration = duration;
         this.poster = poster;
-        this.resume = resume;
+        this.synopsis = synopsis;
     }
 
     public int getDuration() {

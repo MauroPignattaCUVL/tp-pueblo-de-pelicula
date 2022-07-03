@@ -2,7 +2,8 @@ package com.tssi.pueblo_pelicula.util;
 
 import com.tssi.pueblo_pelicula.constant.MovieType;
 import com.tssi.pueblo_pelicula.dto.MovieDTO;
-import com.tssi.pueblo_pelicula.exception.MovieDataException;
+import com.tssi.pueblo_pelicula.error.exception.BusinessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -19,7 +20,8 @@ public class MovieUtil {
         MovieType movieType = MovieType.valueOf(movieDTO.getMovieType().toString().toUpperCase());
         if (COMMERCIAL.equals(movieType) && (CollectionUtils.isEmpty(movieDTO.getActors()) || !actorsAreValid(movieDTO.getActors())) ||
                 DOCUMENTARY.equals(movieType) && movieDTO.getDocumentaryTheme() == null) {
-            throw new MovieDataException("The list of actor or documentary theme does not match with the movie type entered.");
+            throw new BusinessException(
+                "The list of actor or documentary theme does not match with the movie type entered.", HttpStatus.BAD_REQUEST);
         }
 
         return movieType;
@@ -27,7 +29,8 @@ public class MovieUtil {
 
     public static void checkResume(final MovieDTO movieDTO) {
         if (movieDTO.getSynopsis() != null && movieDTO.getSynopsis().length() > RESUME_MAX_LENGTH) {
-            throw new MovieDataException("The synopsis of the movie is invalid.");
+            throw new BusinessException(
+                "The synopsis of the movie is invalid.", HttpStatus.BAD_REQUEST);
         }
     }
 

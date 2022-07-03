@@ -2,9 +2,9 @@ package com.tssi.pueblo_pelicula.service.impl;
 
 import com.tssi.pueblo_pelicula.constant.MovieType;
 import com.tssi.pueblo_pelicula.dto.MovieDTO;
-import com.tssi.pueblo_pelicula.exception.MovieNotFoundException;
+import com.tssi.pueblo_pelicula.error.Input;
+import com.tssi.pueblo_pelicula.error.exception.BusinessException;
 import com.tssi.pueblo_pelicula.mapper.MovieMapper;
-import com.tssi.pueblo_pelicula.model.Cinema;
 import com.tssi.pueblo_pelicula.model.Commercial;
 import com.tssi.pueblo_pelicula.model.Documentary;
 import com.tssi.pueblo_pelicula.model.Movie;
@@ -12,8 +12,10 @@ import com.tssi.pueblo_pelicula.repository.MovieRepository;
 import com.tssi.pueblo_pelicula.service.CinemaService;
 import com.tssi.pueblo_pelicula.service.MovieService;
 import com.tssi.pueblo_pelicula.util.MovieUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +26,6 @@ public class MovieServiceImpl implements MovieService {
     private CinemaService cinemaService;
 
     public MovieServiceImpl(MovieRepository movieRepository,
-
                             CinemaService cinemaService) {
         this.movieRepository = movieRepository;
         this.cinemaService = cinemaService;
@@ -32,7 +33,6 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public MovieDTO save(final MovieDTO movieDTO) {
-
         MovieUtil.checkResume(movieDTO);
         MovieType type = MovieUtil.getMovieType(movieDTO);
         switch (type) {
@@ -53,12 +53,10 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public MovieDTO getMovieById(final Long id) {
-        Optional<Movie> movie = movieRepository.findById(id);
-        if (movie.isEmpty()) {
-            throw new MovieNotFoundException(String.format("There isn´t a movie with id : %s", id));
-        }
+        Movie movie = movieRepository.findById(id).orElse(null);
+        Input.found(movie, "No movie found with id: " + id);
 
-        return MovieMapper.toDTO(movie.get());
+        return MovieMapper.toDTO(movie);
     }
 
     @Override
@@ -69,29 +67,14 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public void deleteById(final Long id) {
+        Movie movie = movieRepository.findById(id).orElse(null);
+        Input.found(movie, "No movie found with id: " + id);
 
-        if (movieRepository.findById(id).isPresent()) {
-            List<Cinema> cinemas = cinemaService.getAll();
-            boolean cantDeleted = cinemas.stream()
-                    .anyMatch(cinema ->
-                            cinema.getTheaters() != null ? cinema.getTheaters().stream()
-                                    .anyMatch(theater -> theater.getScreenings().stream()
-                                            .anyMatch(screening -> screening.getMovie() != null ? screening.getMovie()
-                                                    .getId()
-                                                    .equals(id) : false)
-                                    )
-                                    : false);
-
-            if (!cantDeleted) {
-                movieRepository.deleteById(id);
-            } else {
-                throw new RuntimeException("The movie cant be deleted because is still in theaters");
-            }
-
-        } else {
-            throw new MovieNotFoundException(String.format("The movie with id %d doesn´t exists.", id));
+        try {
+            movieRepository.delete(movie);
+        } catch (ConstraintViolationException e) {
+            throw new BusinessException(
+                "The movie cant be deleted because is still in theaters.", HttpStatus.BAD_REQUEST);
         }
-
     }
-
 }

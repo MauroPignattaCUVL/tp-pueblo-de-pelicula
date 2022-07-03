@@ -378,7 +378,7 @@ components:
           minLength: 1
           example: "data:image/jpeg;base64,iVBORw0KGgoA..."
         synopsis:
-          description: short summary of the movie.
+          description: A short summary of the movie.
           type: string
           example: "this movie is about...."
 
