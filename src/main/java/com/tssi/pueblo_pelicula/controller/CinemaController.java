@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/cinemas")
 public class CinemaController {
 
-  private CinemaService cinemaService;
+  private final CinemaService cinemaService;
 
   @GetMapping("/names")
   @ResponseBody

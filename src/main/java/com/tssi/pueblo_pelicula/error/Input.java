@@ -1,6 +1,5 @@
 package com.tssi.pueblo_pelicula.error;
 
-import com.tssi.pueblo_pelicula.error.exception.BusinessException;
 import org.springframework.http.HttpStatus;
 
 import java.util.Collection;

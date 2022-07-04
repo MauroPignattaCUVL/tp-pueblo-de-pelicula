@@ -11,7 +11,7 @@ public interface MovieService {
 
     String getMoviePoster(Long id);
 
-    List<MovieDTO> getMovies();
+    List<MovieDTO> getMovies(Long cinemaId, String filter);
 
     void deleteById(Long id);
 }

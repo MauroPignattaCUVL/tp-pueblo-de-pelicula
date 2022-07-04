@@ -2,35 +2,29 @@ package com.tssi.pueblo_pelicula.controller;
 
 import com.tssi.pueblo_pelicula.dto.MovieDTO;
 import com.tssi.pueblo_pelicula.service.MovieService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Nullable;
 import javax.validation.Valid;
 import java.util.List;
 
 @Valid
+@AllArgsConstructor
 @RestController
 @RequestMapping("/movies")
 public class MovieController {
 
-    private MovieService movieService;
-
-    public MovieController(MovieService movieService) {
-        this.movieService = movieService;
-    }
+    private final MovieService movieService;
 
     @GetMapping
     @Transactional(readOnly = true)
-    public ResponseEntity<List<MovieDTO>> getMovies() {
-        return new ResponseEntity<>(movieService.getMovies(),HttpStatus.OK);
+    public ResponseEntity<List<MovieDTO>> getMovies(@RequestParam @Nullable Long cinema_id,
+                                                    @RequestParam @Nullable String filter) {
+        return new ResponseEntity<>(movieService.getMovies(cinema_id, filter),HttpStatus.OK);
     }
 
     @PostMapping

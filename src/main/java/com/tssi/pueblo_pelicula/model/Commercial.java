@@ -2,6 +2,7 @@ package com.tssi.pueblo_pelicula.model;
 
 import com.tssi.pueblo_pelicula.constant.MovieType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.ElementCollection;
@@ -9,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @NoArgsConstructor

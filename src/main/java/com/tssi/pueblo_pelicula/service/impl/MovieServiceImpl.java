@@ -1,9 +1,10 @@
 package com.tssi.pueblo_pelicula.service.impl;
 
+import com.tssi.pueblo_pelicula.constant.DocumentaryTheme;
 import com.tssi.pueblo_pelicula.constant.MovieType;
 import com.tssi.pueblo_pelicula.dto.MovieDTO;
 import com.tssi.pueblo_pelicula.error.Input;
-import com.tssi.pueblo_pelicula.error.exception.BusinessException;
+import com.tssi.pueblo_pelicula.error.BusinessException;
 import com.tssi.pueblo_pelicula.mapper.MovieMapper;
 import com.tssi.pueblo_pelicula.model.Commercial;
 import com.tssi.pueblo_pelicula.model.Documentary;
@@ -17,13 +18,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolationException;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
 public class MovieServiceImpl implements MovieService {
 
-    private MovieRepository movieRepository;
+    private final MovieRepository movieRepository;
 
     @Override
     public MovieDTO save(final MovieDTO movieDTO) {
@@ -62,9 +64,30 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public List<MovieDTO> getMovies() {
-        List<Movie> movies = movieRepository.findAll(Sort.by("name"));
-        return MovieMapper.toMovieDTOList(movies);
+    public List<MovieDTO> getMovies(Long cinemaId, String filter) {
+        if (cinemaId == null && filter == null) {
+            return MovieMapper.toMovieDTOS(movieRepository.findAll(Sort.by("name")));
+        }
+
+        Input.notNull(cinemaId, "The cinema id cannot be null.");
+        Set<Movie> moviesInCinema = movieRepository.getMoviesScheduledInCinema(cinemaId);
+        if (filter == null) {
+            return MovieMapper.toMovieDTOS(moviesInCinema);
+        }
+
+        Set<Movie> filteredMovies = movieRepository.getMoviesByName(filter);
+        filteredMovies.addAll(movieRepository.getCommercialMovieByActor(filter));
+        DocumentaryTheme documentaryTheme = DocumentaryTheme.fromValue(filter);
+        if (documentaryTheme != null) {
+            filteredMovies.addAll(movieRepository.getDocumentaryByTheme(documentaryTheme));
+        }
+
+        Set<Movie> intersection = moviesInCinema.stream()
+            .filter(filteredMovies::contains)
+            .sorted(Comparator.comparing(Movie::getName))
+            .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        return MovieMapper.toMovieDTOS(intersection);
     }
 
     @Override

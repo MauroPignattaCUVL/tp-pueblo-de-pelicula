@@ -1,4 +1,4 @@
-package com.tssi.pueblo_pelicula.error.exception;
+package com.tssi.pueblo_pelicula.error;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,7 @@
 package com.tssi.pueblo_pelicula.model;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.Validate;
 
@@ -8,7 +9,6 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Set;
 
 import static com.tssi.pueblo_pelicula.model.Screening.*;
@@ -19,7 +19,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /** Represents the movie theater, that groups and manages the screenings. */
 @Entity
-@Data
+@Getter
 @NoArgsConstructor
 public class Theater {
 
@@ -42,7 +42,7 @@ public class Theater {
 
     /** The scheduled screenings. Never null.
      * Might be empty if no screenings are scheduled. */
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "theater", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Screening> screenings;
 
     /** Adds a screening to the theater.
@@ -58,7 +58,7 @@ public class Theater {
 
         LocalDateTime screeningTime = resolveNextScreeningTime(screeningDate);
 
-        screenings.add(new Screening(screeningTime, movie));
+        screenings.add(new Screening(screeningTime, movie, this));
     }
 
     /** Resolves the hour that the next screening should be scheduled.

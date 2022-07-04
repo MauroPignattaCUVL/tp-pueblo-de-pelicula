@@ -1,7 +1,6 @@
 package com.tssi.pueblo_pelicula.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tssi.pueblo_pelicula.error.exception.BusinessException;
+import com.tssi.pueblo_pelicula.error.BusinessException;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 

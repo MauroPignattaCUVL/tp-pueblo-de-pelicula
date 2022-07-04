@@ -2,13 +2,13 @@ package com.tssi.pueblo_pelicula.mapper;
 
 import com.tssi.pueblo_pelicula.constant.MovieType;
 import com.tssi.pueblo_pelicula.dto.MovieDTO;
-import com.tssi.pueblo_pelicula.error.exception.BusinessException;
+import com.tssi.pueblo_pelicula.error.BusinessException;
 import com.tssi.pueblo_pelicula.model.Commercial;
 import com.tssi.pueblo_pelicula.model.Documentary;
 import com.tssi.pueblo_pelicula.model.Movie;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.parameters.P;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +46,7 @@ public class MovieMapper {
         return movieDTO;
     }
 
-    public static List<MovieDTO> toMovieDTOList(List<Movie> movies) {
+    public static List<MovieDTO> toMovieDTOS(Collection<Movie> movies) {
         return movies.stream().map(MovieMapper::toDTOWithoutPoster)
             .collect(Collectors.toList());
     }

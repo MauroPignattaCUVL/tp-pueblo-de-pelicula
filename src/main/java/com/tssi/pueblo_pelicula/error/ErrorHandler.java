@@ -1,7 +1,6 @@
 package com.tssi.pueblo_pelicula.error;
 
 import com.tssi.pueblo_pelicula.dto.ErrorDto;
-import com.tssi.pueblo_pelicula.error.exception.BusinessException;
 import org.apache.commons.lang3.Validate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

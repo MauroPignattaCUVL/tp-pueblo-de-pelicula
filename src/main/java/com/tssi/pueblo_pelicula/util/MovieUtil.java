@@ -2,7 +2,7 @@ package com.tssi.pueblo_pelicula.util;
 
 import com.tssi.pueblo_pelicula.constant.MovieType;
 import com.tssi.pueblo_pelicula.dto.MovieDTO;
-import com.tssi.pueblo_pelicula.error.exception.BusinessException;
+import com.tssi.pueblo_pelicula.error.BusinessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 

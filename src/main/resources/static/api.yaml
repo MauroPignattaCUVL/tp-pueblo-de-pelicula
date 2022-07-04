@@ -108,6 +108,20 @@ paths:
       summary: Returns all the available movies without the poster.
       tags:
         - movie
+      parameters:
+        - in: query
+          name: cinema_id
+          schema:
+            type: integer
+            format: int64
+            example: 1
+          description: The id of the cinema
+        - in: query
+          name: filter
+          schema:
+            type: string
+            example: "Titanic"
+          description: The filter that applies to the movie's name, actors and documentary_theme.
       responses:
         200:
           description: A list containing all the Movies.
@@ -390,10 +404,10 @@ components:
             - movie_type
           properties:
             movie_type:
-              description: Defines the type of the movie. It should always be 'Commercial'.
+              description: Defines the type of the movie. It should always be 'COMMERCIAL'.
               type: string
               minLength: 1
-              example: "Commercial"
+              example: "COMMERCIAL"
             actors:
               description: The actors that participate in the movie.
               type: array
@@ -411,10 +425,10 @@ components:
             - documentary_type
           properties:
             movie_type:
-              description: Defines the type of the movie. It should always be 'Documentary'.
+              description: Defines the type of the movie. It should always be 'DOCUMENTARY'.
               type: string
               minLength: 1
-              example: "Documentary"
+              example: "DOCUMENTARY"
             documentary_type:
               $ref: '#/components/schemas/DocumentaryType'
 

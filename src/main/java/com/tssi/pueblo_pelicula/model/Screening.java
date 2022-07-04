@@ -38,10 +38,11 @@ public class Screening {
     @Column(nullable = false)
     private LocalDateTime time;
 
-    /** The movie to be played in the screening. Never null. */
+    /** The theater where the screening will take place. Never null. */
     @ManyToOne
     private Theater theater;
 
+    /** The movie to be played in the screening. Never null. */
     @ManyToOne
     private Movie movie;
 
@@ -52,9 +53,10 @@ public class Screening {
      *
      * @param movie The movie to be played in the screening. Cannot be null.
      */
-    public Screening(LocalDateTime startTime, Movie movie) {
+    public Screening(LocalDateTime startTime, Movie movie, Theater theater) {
         Validate.notNull(startTime, "The startTime cannot be null.");
         Validate.notNull(movie, "The movie cannot be null.");
+        Validate.notNull(theater, "The theater cannot be null.");
 
         LocalTime time = startTime.toLocalTime();
         boolean isValidTime = time.isAfter(FIRST_SCREENING_OF_DAY.minusMinutes(1))
@@ -63,6 +65,7 @@ public class Screening {
 
         this.time = startTime;
         this.movie = movie;
+        this.theater = theater;
     }
 
     /** Indicates if the screening belongs to a given date.

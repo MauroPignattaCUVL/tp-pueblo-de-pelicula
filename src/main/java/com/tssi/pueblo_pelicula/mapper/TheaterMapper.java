@@ -16,7 +16,7 @@ public class TheaterMapper {
     theaterDTO.setTheaterType(theater.getTheaterType());
 
     List<ScreeningDTO> screeningDTOS = theater.getScreenings().stream()
-        .map(ScreeningMapper::toDto).collect(Collectors.toList());
+      .map(ScreeningMapper::toDto).collect(Collectors.toList());
     theaterDTO.setScreenings(screeningDTOS);
 
     return theaterDTO;
