@@ -12,7 +12,6 @@ import javax.annotation.Nullable;
 import javax.validation.Valid;
 import java.util.List;
 
-@Valid
 @AllArgsConstructor
 @RestController
 @RequestMapping("/movies")
@@ -29,7 +28,7 @@ public class MovieController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<MovieDTO> postMovie(@RequestBody MovieDTO movieDTO) {
+    public ResponseEntity<MovieDTO> postMovie(@Valid @RequestBody MovieDTO movieDTO) {
        return new ResponseEntity<>(movieService.save(movieDTO),HttpStatus.CREATED);
     }
 

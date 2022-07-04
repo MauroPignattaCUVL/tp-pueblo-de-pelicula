@@ -2,7 +2,6 @@ package com.tssi.pueblo_pelicula.dto;
 
 import com.tssi.pueblo_pelicula.constant.DocumentaryTheme;
 import com.tssi.pueblo_pelicula.constant.MovieType;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 

@@ -13,7 +13,6 @@ import lombok.AllArgsConstructor;
 import javax.validation.Valid;
 import java.util.List;
 
-@Valid
 @AllArgsConstructor
 @RestController
 @RequestMapping("/cinemas")
@@ -38,7 +37,7 @@ public class CinemaController {
   @PostMapping("/screening/schedule")
   @ResponseBody
   @Transactional
-  public ResponseEntity<Void> scheduleScreening(@RequestBody ScreeningScheduleDTO screeningScheduleDTO) {
+  public ResponseEntity<Void> scheduleScreening(@Valid @RequestBody ScreeningScheduleDTO screeningScheduleDTO) {
     cinemaService.scheduleScreening(screeningScheduleDTO);
 
     return ResponseEntity.noContent().build();
@@ -47,7 +46,7 @@ public class CinemaController {
   @PostMapping("/screening/replanning")
   @ResponseBody
   @Transactional
-  public ResponseEntity<Void> replanning(@RequestBody ScreeningReplanningDTO screeningReplanningDTO) {
+  public ResponseEntity<Void> replanning(@Valid @RequestBody ScreeningReplanningDTO screeningReplanningDTO) {
     cinemaService.replanning(screeningReplanningDTO);
 
     return ResponseEntity.noContent().build();
