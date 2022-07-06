@@ -179,6 +179,27 @@ paths:
         404:
           description: Movie not found.
 
+  /movies/{id}/screenings:
+    get:
+      summary: Returns all the screenings scheduled with the given movie for each cinema.
+      tags:
+        - movie
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: The id of the movie to retrieve its screenings.
+      responses:
+        200:
+          description: Success to return the screening for a given movie.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreeningsForMovie'
+
 components:
   schemas:
 
@@ -437,6 +458,22 @@ components:
       type: string
       enum: [ BIOGRAPHY, WILD_LIFE, ECOLOGY, HISTORICAL, SOCIAL ]
       example: "WILD_LIFE"
+
+    ScreeningsForMovie:
+      type: object
+      required:
+        - cinema_id
+        - screenings
+      properties:
+        cinema_id:
+          description: The id of the cinema.
+          type: integer
+          format: int64
+          example: 1
+        screenings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Screening'
 
   securitySchemes:
     bearerAuth:

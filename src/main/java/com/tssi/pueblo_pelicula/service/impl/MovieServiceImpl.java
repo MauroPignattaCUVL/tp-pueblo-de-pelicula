@@ -3,16 +3,21 @@ package com.tssi.pueblo_pelicula.service.impl;
 import com.tssi.pueblo_pelicula.constant.DocumentaryTheme;
 import com.tssi.pueblo_pelicula.constant.MovieType;
 import com.tssi.pueblo_pelicula.dto.MovieDTO;
+import com.tssi.pueblo_pelicula.dto.ScreeningForMovieDTO;
 import com.tssi.pueblo_pelicula.error.Input;
 import com.tssi.pueblo_pelicula.error.BusinessException;
 import com.tssi.pueblo_pelicula.mapper.MovieMapper;
+import com.tssi.pueblo_pelicula.mapper.ScreeningMapper;
 import com.tssi.pueblo_pelicula.model.Commercial;
 import com.tssi.pueblo_pelicula.model.Documentary;
 import com.tssi.pueblo_pelicula.model.Movie;
+import com.tssi.pueblo_pelicula.model.Screening;
 import com.tssi.pueblo_pelicula.repository.MovieRepository;
+import com.tssi.pueblo_pelicula.repository.ScreeningRepository;
 import com.tssi.pueblo_pelicula.service.MovieService;
 import com.tssi.pueblo_pelicula.util.MovieUtil;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.Validate;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,6 +31,8 @@ import java.util.stream.Collectors;
 public class MovieServiceImpl implements MovieService {
 
     private final MovieRepository movieRepository;
+
+    private final ScreeningRepository screeningRepository;
 
     @Override
     public MovieDTO save(final MovieDTO movieDTO) {
@@ -88,6 +95,25 @@ public class MovieServiceImpl implements MovieService {
             .collect(Collectors.toCollection(LinkedHashSet::new));
 
         return MovieMapper.toMovieDTOS(intersection);
+    }
+
+    @Override
+    public List<ScreeningForMovieDTO> getScreeningsForMovie(Long id) {
+        List<Screening> screeningsForMovie = screeningRepository.getScreeningsForMovie(id);
+        Map<Long, List<Screening>> screeningsByCinemaId = new HashMap<>();
+        for (Screening screening : screeningsForMovie) {
+            Long cinemaId = screening.getTheater().getCinema().getId();
+
+            List<Screening> screenings = screeningsByCinemaId.get(cinemaId);
+            if (screenings != null) {
+                screenings.add(screening);
+            } else {
+                screenings = new ArrayList<>(Collections.singletonList(screening));
+                screeningsByCinemaId.put(cinemaId, screenings);
+            }
+        }
+
+        return ScreeningMapper.toScreeningsForMovieDTO(screeningsByCinemaId);
     }
 
     @Override

@@ -37,7 +37,7 @@ public class Theater {
     @Enumerated(value = EnumType.STRING)
     private TheaterType theaterType;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Cinema cinema;
 
     /** The scheduled screenings. Never null.

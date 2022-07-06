@@ -39,11 +39,11 @@ public class Screening {
     private LocalDateTime time;
 
     /** The theater where the screening will take place. Never null. */
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Theater theater;
 
     /** The movie to be played in the screening. Never null. */
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Movie movie;
 
     /** Constructor.

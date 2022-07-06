@@ -1,6 +1,7 @@
 package com.tssi.pueblo_pelicula.controller;
 
 import com.tssi.pueblo_pelicula.dto.MovieDTO;
+import com.tssi.pueblo_pelicula.dto.ScreeningForMovieDTO;
 import com.tssi.pueblo_pelicula.service.MovieService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -49,5 +50,11 @@ public class MovieController {
     @Transactional(readOnly = true)
     public ResponseEntity<String> getMoviePoster(@PathVariable Long id) {
         return ResponseEntity.ok(movieService.getMoviePoster(id));
+    }
+
+    @GetMapping("/{id}/screenings")
+    @Transactional(readOnly = true)
+    public ResponseEntity<List<ScreeningForMovieDTO>> getScreeningsForMovie(@PathVariable Long id) {
+        return ResponseEntity.ok(movieService.getScreeningsForMovie(id));
     }
 }
