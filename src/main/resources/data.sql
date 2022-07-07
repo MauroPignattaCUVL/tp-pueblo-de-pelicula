@@ -1,3 +1,20 @@
+create table cinema (id bigint not null auto_increment, name varchar(255) not null, primary key (id)) engine=InnoDB;
+create table commercial (movie_id bigint not null, primary key (movie_id)) engine=InnoDB;
+create table commercial_actors (commercial_movie_id bigint not null, actors varchar(255)) engine=InnoDB;
+create table documentary (documentary_theme varchar(255) not null, movie_id bigint not null, primary key (movie_id)) engine=InnoDB;
+create table movie (id bigint not null auto_increment, duration integer not null, name varchar(255) not null, poster varchar(8096) not null, synopsis varchar(255), primary key (id)) engine=InnoDB;
+create table screening (id bigint not null auto_increment, time datetime(6) not null, movie_id bigint not null, theater_id bigint not null, primary key (id)) engine=InnoDB;
+create table theater (id bigint not null auto_increment, number integer not null, theater_type varchar(255) not null, cinema_id bigint not null, primary key (id)) engine=InnoDB;
+create table users (id bigint not null auto_increment, email varchar(255) not null, first_name varchar(255) not null, last_name varchar(255) not null, password varchar(255) not null, primary key (id)) engine=InnoDB;
+alter table cinema add constraint UK_oghcyu0s7am42jr8tbyux8csp unique (name);
+alter table users add constraint UK_6dotkott2kjsp8vw4d0m25fb7 unique (email);
+alter table commercial add constraint FKsoevb8q2nhbsi4m5a0njgq82n foreign key (movie_id) references movie (id);
+alter table commercial_actors add constraint FKc3uy3boauqdgcv4davngehqm7 foreign key (commercial_movie_id) references commercial (movie_id);
+alter table documentary add constraint FKl8b62de7i8sjlst135dwugbtr foreign key (movie_id) references movie (id);
+alter table screening add constraint FKfp7sh76xc9m508stllspchnp9 foreign key (movie_id) references movie (id);
+alter table screening add constraint FKcamygvcxv5aywcmjogp6uayre foreign key (theater_id) references theater (id);
+alter table theater add constraint FKjur3k2m1ybr25xrs62nyg21rv foreign key (cinema_id) references cinema (id);
+
 INSERT INTO users (email, first_name, last_name, password)
 VALUES ('CristianPerez@gmail.com', 'Cristian', 'Perez', '$2a$10$GceBTMx5xPcFs8skaMTH2.taB0mzHt7U3fY2J0Mjevj0ARq81XK0i'),
        ('RominaPaez@gmail.com', 'Romina', 'Paez', '$2a$10$GceBTMx5xPcFs8skaMTH2.taB0mzHt7U3fY2J0Mjevj0ARq81XK0i');
