@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @CrossOrigin
@@ -36,9 +37,10 @@ public class CinemaController {
   @GetMapping("/screening")
   @ResponseBody
   @Transactional(readOnly = true)
-  public ResponseEntity<List<ScreeningDTO>> getScreeningsForDate(@PathVariable("cinema_id") long cinemaId,
-        @PathVariable("theater_id") long theaterId, @PathVariable("date") LocalDate date) {
-    return ResponseEntity.ok(cinemaService.getScreeningsForDate(cinemaId, theaterId, date));
+  public ResponseEntity<List<ScreeningDTO>> getScreeningsForDate(@RequestParam("cinema_id") long cinemaId,
+        @RequestParam("theater_id") long theaterId, @RequestParam("date") String date) {
+    LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    return ResponseEntity.ok(cinemaService.getScreeningsForDate(cinemaId, theaterId, localDate));
   }
 
   @PostMapping("/screening/schedule")

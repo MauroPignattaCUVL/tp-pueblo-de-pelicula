@@ -28,7 +28,7 @@ public abstract class Movie {
     @Column(nullable = false)
     private int duration;
 
-    @Column(nullable = false, length = 8096)
+    @Column(nullable = false, columnDefinition="TEXT")
     private String poster;
 
     @Column
