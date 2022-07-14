@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import lombok.AllArgsConstructor;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 
 @AllArgsConstructor
@@ -31,12 +32,12 @@ public class CinemaController {
     return ResponseEntity.ok(cinemaService.getCinemaById(id));
   }
 
-  @PostMapping("/screening")
+  @GetMapping("/screening")
   @ResponseBody
   @Transactional(readOnly = true)
-  public ResponseEntity<List<ScreeningDTO>> getScreeningsForDate(
-        @Valid @RequestBody ScreeningsForDateDTO ScreeningsForDateDTO) {
-    return ResponseEntity.ok(cinemaService.getScreeningsForDate(ScreeningsForDateDTO));
+  public ResponseEntity<List<ScreeningDTO>> getScreeningsForDate(@PathVariable("cinema_id") long cinemaId,
+        @PathVariable("theater_id") long theaterId, @PathVariable("date") LocalDate date) {
+    return ResponseEntity.ok(cinemaService.getScreeningsForDate(cinemaId, theaterId, date));
   }
 
   @PostMapping("/screening/schedule")

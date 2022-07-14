@@ -2,6 +2,7 @@ package com.tssi.pueblo_pelicula.service;
 
 import com.tssi.pueblo_pelicula.dto.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface CinemaService {
@@ -36,5 +37,5 @@ public interface CinemaService {
    *
    * @return All the screenings for the given date. Never null, might be empty.
    */
-  List<ScreeningDTO> getScreeningsForDate(ScreeningsForDateDTO screeningsForDateDTO);
+  List<ScreeningDTO> getScreeningsForDate(long cinemaId, long theaterId, LocalDate date);
 }
