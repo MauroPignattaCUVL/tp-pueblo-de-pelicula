@@ -3,6 +3,7 @@ package com.tssi.pueblo_pelicula.service.impl;
 import com.tssi.pueblo_pelicula.dto.*;
 import com.tssi.pueblo_pelicula.error.Input;
 import com.tssi.pueblo_pelicula.mapper.CinemaMapper;
+import com.tssi.pueblo_pelicula.mapper.ScreeningMapper;
 import com.tssi.pueblo_pelicula.model.Cinema;
 import com.tssi.pueblo_pelicula.model.Movie;
 import com.tssi.pueblo_pelicula.model.Screening;
@@ -68,8 +69,6 @@ public class CinemaServiceImpl implements CinemaService {
     Input.notNull(theater, "The theater does not belong to the cinema.");
 
     theater.addScreening(movie, date);
-
-    cinemaRepository.save(cinema);
   }
 
   @Override
@@ -92,5 +91,27 @@ public class CinemaServiceImpl implements CinemaService {
     Input.notEmpty(screeningsToRemove, "No screening scheduled for that date.");
 
     screeningsToRemove.forEach(theater.getScreenings()::remove);
+  }
+
+  @Override
+  public List<ScreeningDTO> getScreeningsForDate(ScreeningsForDateDTO screeningsForDateDTO) {
+    long cinemaId = screeningsForDateDTO.getCinemaId();
+    long theaterId = screeningsForDateDTO.getTheaterId();
+    LocalDate date = screeningsForDateDTO.getDate();
+
+    Cinema cinema = cinemaRepository.findById(cinemaId).orElse(null);
+    Input.found(cinema, "No cinema found with id: " + cinemaId);
+
+    Theater theater = cinema.getTheaters().stream()
+        .filter(th -> th.getId().equals(theaterId))
+        .findFirst().orElse(null);
+    Input.notNull(theater, "The theater does not belong to the cinema.");
+
+    List<Screening> screeningsForDate = theater.getScreenings().stream()
+        .filter(s -> s.isForDate(date))
+        .collect(Collectors.toList());
+
+    return screeningsForDate.stream().map(ScreeningMapper::toDto)
+        .collect(Collectors.toList());
   }
 }

@@ -1,9 +1,6 @@
 package com.tssi.pueblo_pelicula.service;
 
-import com.tssi.pueblo_pelicula.dto.CinemaDTO;
-import com.tssi.pueblo_pelicula.dto.CinemaNameAndIdDTO;
-import com.tssi.pueblo_pelicula.dto.ScreeningReplanningDTO;
-import com.tssi.pueblo_pelicula.dto.ScreeningScheduleDTO;
+import com.tssi.pueblo_pelicula.dto.*;
 
 import java.util.List;
 
@@ -32,4 +29,12 @@ public interface CinemaService {
    * @param screeningReplanningDTO It cannot be null.
    */
   void replanning(ScreeningReplanningDTO screeningReplanningDTO);
+
+  /** Gets the screenings for a given date in a cinema.
+   *
+   * @param screeningsForDateDTO the ScreeningForDateDTO. Cannot be null.
+   *
+   * @return All the screenings for the given date. Never null, might be empty.
+   */
+  List<ScreeningDTO> getScreeningsForDate(ScreeningsForDateDTO screeningsForDateDTO);
 }

@@ -1,9 +1,6 @@
 package com.tssi.pueblo_pelicula.controller;
 
-import com.tssi.pueblo_pelicula.dto.CinemaDTO;
-import com.tssi.pueblo_pelicula.dto.CinemaNameAndIdDTO;
-import com.tssi.pueblo_pelicula.dto.ScreeningReplanningDTO;
-import com.tssi.pueblo_pelicula.dto.ScreeningScheduleDTO;
+import com.tssi.pueblo_pelicula.dto.*;
 import com.tssi.pueblo_pelicula.service.CinemaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +20,7 @@ public class CinemaController {
   @GetMapping("/names")
   @ResponseBody
   @Transactional(readOnly = true)
-  public ResponseEntity<List<CinemaNameAndIdDTO>> getAllCinemasKeys() {
+  public ResponseEntity<List<CinemaNameAndIdDTO>> getAllCinemasNameAndIds() {
     return ResponseEntity.ok(cinemaService.getCinemasNamesAndIds());
   }
 
@@ -32,6 +29,14 @@ public class CinemaController {
   @Transactional(readOnly = true)
   public ResponseEntity<CinemaDTO> getById(@PathVariable("id") Long id) {
     return ResponseEntity.ok(cinemaService.getCinemaById(id));
+  }
+
+  @PostMapping("/screening")
+  @ResponseBody
+  @Transactional(readOnly = true)
+  public ResponseEntity<List<ScreeningDTO>> getScreeningsForDate(
+        @Valid @RequestBody ScreeningsForDateDTO ScreeningsForDateDTO) {
+    return ResponseEntity.ok(cinemaService.getScreeningsForDate(ScreeningsForDateDTO));
   }
 
   @PostMapping("/screening/schedule")
