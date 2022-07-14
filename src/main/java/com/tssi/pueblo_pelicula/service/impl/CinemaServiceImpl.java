@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -94,11 +95,7 @@ public class CinemaServiceImpl implements CinemaService {
   }
 
   @Override
-  public List<ScreeningDTO> getScreeningsForDate(ScreeningsForDateDTO screeningsForDateDTO) {
-    long cinemaId = screeningsForDateDTO.getCinemaId();
-    long theaterId = screeningsForDateDTO.getTheaterId();
-    LocalDate date = screeningsForDateDTO.getDate();
-
+  public List<ScreeningDTO> getScreeningsForDate(long cinemaId, long theaterId, LocalDate date) {
     Cinema cinema = cinemaRepository.findById(cinemaId).orElse(null);
     Input.found(cinema, "No cinema found with id: " + cinemaId);
 
@@ -112,6 +109,7 @@ public class CinemaServiceImpl implements CinemaService {
         .collect(Collectors.toList());
 
     return screeningsForDate.stream().map(ScreeningMapper::toDto)
+        .sorted(Comparator.comparing(ScreeningDTO::getBeginsAt))
         .collect(Collectors.toList());
   }
 }

@@ -64,20 +64,38 @@ paths:
           description: No Cinema found with the given id.
 
   /cinemas/screening:
-    post:
+    get:
       summary: Returns the screening scheduled for a given date in a Cinema.
       tags:
         - cinema
       security:
         - bearerAuth: [ ]
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ScreeningsForDate'
+      parameters:
+        - in: path
+          name: cinema_id
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: The id of the cinema.
+        - in: path
+          name: theater_id
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: The id of the theater.
+        - in: path
+          name: date
+          schema:
+            type: string
+            format: date
+            example: 2022-06-20
+          required: true
+          description: The date to get the screenings.
       responses:
         200:
-          description: Success to return the Cinema.
+          description: Success to return the screenings.
           content:
             application/json:
               schema:
@@ -382,29 +400,6 @@ components:
           example: 1
         date:
           description: The date when the screening will be scheduled with format 'yyyy-mm-dd'. Must be a date in the future.
-          type: string
-          format: date
-          example: '2023-12-20'
-
-    ScreeningsForDate:
-      type: object
-      required:
-        - cinema_id
-        - theater_id
-        - date
-      properties:
-        cinema_id:
-          description: The id of the cinema to replan its screenings.
-          type: integer
-          format: int64
-          example: 1
-        theater_id:
-          description: The id of the theater to replan its screenings Must belong to the given cinema.
-          type: integer
-          format: int64
-          example: 1
-        date:
-          description: The date at which the replan will occur with format 'yyyy-mm-dd'. Must be a date in the future.
           type: string
           format: date
           example: '2023-12-20'
