@@ -2,7 +2,7 @@ create table cinema (id bigint not null auto_increment, name varchar(255) not nu
 create table commercial (movie_id bigint not null, primary key (movie_id)) engine=InnoDB;
 create table commercial_actors (commercial_movie_id bigint not null, actors varchar(255)) engine=InnoDB;
 create table documentary (documentary_theme varchar(255) not null, movie_id bigint not null, primary key (movie_id)) engine=InnoDB;
-create table movie (id bigint not null auto_increment, duration integer not null, name varchar(255) not null, poster varchar(8096) not null, synopsis varchar(255), primary key (id)) engine=InnoDB;
+create table movie (id bigint not null auto_increment, duration integer not null, name varchar(255) not null, poster text not null, synopsis varchar(255), primary key (id)) engine=InnoDB;
 create table screening (id bigint not null auto_increment, time datetime(6) not null, movie_id bigint not null, theater_id bigint not null, primary key (id)) engine=InnoDB;
 create table theater (id bigint not null auto_increment, number integer not null, theater_type varchar(255) not null, cinema_id bigint not null, primary key (id)) engine=InnoDB;
 create table users (id bigint not null auto_increment, email varchar(255) not null, first_name varchar(255) not null, last_name varchar(255) not null, password varchar(255) not null, primary key (id)) engine=InnoDB;
