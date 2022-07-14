@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import javax.validation.Valid;
 import java.util.List;
 
+@CrossOrigin
 @AllArgsConstructor
 @RestController
 @RequestMapping("/cinemas")
