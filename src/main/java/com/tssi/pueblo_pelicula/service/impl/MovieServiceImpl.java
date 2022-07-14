@@ -18,6 +18,7 @@ import com.tssi.pueblo_pelicula.service.MovieService;
 import com.tssi.pueblo_pelicula.util.MovieUtil;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.Validate;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -123,7 +124,8 @@ public class MovieServiceImpl implements MovieService {
 
         try {
             movieRepository.delete(movie);
-        } catch (Exception e) {
+            movieRepository.flush();
+        } catch (DataIntegrityViolationException e) {
             throw new BusinessException(
                 "The movie cant be deleted because is still in theaters.", HttpStatus.BAD_REQUEST);
         }
