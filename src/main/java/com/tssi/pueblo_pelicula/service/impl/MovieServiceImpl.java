@@ -123,7 +123,7 @@ public class MovieServiceImpl implements MovieService {
 
         try {
             movieRepository.delete(movie);
-        } catch (ConstraintViolationException e) {
+        } catch (Exception e) {
             throw new BusinessException(
                 "The movie cant be deleted because is still in theaters.", HttpStatus.BAD_REQUEST);
         }
